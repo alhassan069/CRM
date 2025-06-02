@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## Implementation Notes
+1. Follow the user flow documentation for feature implementation
+2. Use Shadcn UI + Tailwind for all frontend components
+3. Implement AI features as REST endpoints
+4. Ensure proper error handling and logging
+5. Write tests for critical functionality
+6. Document API endpoints using Swagger
+7. Maintain clean code structure and follow best practices 

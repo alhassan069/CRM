@@ -1,0 +1,185 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# CRM User Flow with AI-Powered Add-ons
+
+## Overview
+
+This document outlines the user flow for a CRM platform enabling management of contacts, deals, and customer data. It integrates several AI-powered features for enhanced user productivity and decision-making.
+
+---
+
+## Table of Contents
+
+- [1. Authentication & Dashboard](mdc:#1-authentication--dashboard)
+- [2. Contact Management & Customer Persona Builder](mdc:#2-contact-management--customer-persona-builder)
+- [3. Deal Management & Deal Coach AI](mdc:#3-deal-management--deal-coach-ai)
+- [4. Objection Handler Recommender](mdc:#4-objection-handler-recommender)
+- [5. Win-Loss Explainer](mdc:#5-win-loss-explainer)
+- [6. Activity Logging & Reminders](mdc:#6-activity-logging--reminders)
+- [7. Reporting & Analytics (inc. Win-Loss Insights)](mdc:#7-reporting--analytics-inc-win-loss-insights)
+- [8. Administration](mdc:#8-administration)
+- [9. User Flow Diagram](mdc:#9-user-flow-diagram)
+- [10. UI Integration Points](mdc:#10-ui-integration-points)
+- [11. Notes & Best Practices](mdc:#11-notes--best-practices)
+
+---
+
+## 1. Authentication & Dashboard
+
+- **User Login:**  
+  - Enter credentials (email/password or SSO).
+  - On success, land on the Dashboard.
+
+- **Dashboard Overview:**  
+  - Snapshot widgets: pipeline, tasks, KPIs.
+  - Navigation: Contacts, Deals, Accounts, Reports, Settings.
+
+---
+
+## 2. Contact Management & Customer Persona Builder
+
+- **View Contacts:**  
+  - Search, filter, and sort contacts.
+  - Bulk actions (export, assign, delete).
+
+- **Add/Edit Contact:**  
+  - Fill in contact info (name, company, etc).
+  - Optional: Link to deals/accounts.
+
+- **Contact Detail Page:**  
+  - View info, timeline of activities, related deals.
+  - **AI Persona Button:**  
+    - Click to generate a behavioral profile of the contact based on interaction history.
+    - Profile includes: communication preferences, likely pain points, personality summary, and sales approach tips.
+
+---
+
+## 3. Deal Management & Deal Coach AI
+
+- **View Deals:**  
+  - Kanban board/pipeline view.
+  - Quick actions: Update stage, assign owner.
+
+- **Add/Edit Deal:**  
+  - Provide deal details (name, value, owner, expected close, stage, notes).
+
+- **Deal Detail Page:**  
+  - View timeline, update stage, add tasks, log interactions.
+  - **Deal Coach AI Button:**  
+    - Generate AI-suggested next steps to increase the likelihood of closing the deal, with explanations and rationale.
+    - Updates close probability score.
+    - Option to auto-create recommended tasks.
+
+---
+
+## 4. Objection Handler Recommender
+
+- **Anywhere customer interaction is logged (note, chat, call log):**  
+  - Input box to "Paste customer objection."
+  - AI instantly suggests persuasive responses based on objection content and customer context.
+  - Quick insert to reply, send by email, or log as note.
+  - User can mark if response was used and provide feedback.
+
+---
+
+## 5. Win-Loss Explainer
+
+- **Upon Closing a Deal (Lost or Won):**  
+  - "Win-Loss Explainer" button/link appears in deal summary or closure modal.
+  - AI generates a summary of contributing factors for win or loss, referencing patterns in activity, engagement, and deal data.
+  - Suggestions for future improvement or best practices.
+
+---
+
+## 6. Activity Logging & Reminders
+
+- **From any contact/deal/account page:**  
+  - Log activity (call, email, meeting, note).
+  - Set follow-up or reminder.
+  - Activities contribute to AI insights for personas, deal coaching, and win/loss explanations.
+
+---
+
+## 7. Reporting & Analytics (inc. Win-Loss Insights)
+
+- **Reports Tab:**  
+  - Standard reports: pipeline summary, activity breakdown, performance per user/team.
+  - **AI Win-Loss Insights:**  
+    - Aggregate explanation of closed-won and closed-lost deals, common success/failure patterns.
+    - Suggestions for replicating wins or avoiding losses.
+
+---
+
+## 8. Administration
+
+- **User & Role Management**
+- **CRM customization** (fields, stages, workflow automations)
+- **Manage AI settings** (enable/disable modules per role)
+- **Integrations** (email, calendar, third-party apps)
+
+---
+
+## 9. User Flow Diagram
+
+```mermaid
+flowchart TD
+    A[Login]-->B[Dashboard]
+    B-->C[View Contacts]
+    B-->D[View Deals]
+    B-->E[View Accounts]
+    C-->F[Contact Detail: View AI Persona]
+    F-->G[Add/Edit Deal]
+    D-->H[Deal Detail: Deal Coach AI/Win-Loss Explainer]
+    H-->I[Update Deal Stage]
+    H-->O[Handle Objection (AI)]
+    I-->J[Closed Deal: Win-Loss Explainer]
+    E-->K[Account Details]
+    K-->L[Linked Contacts/Deals]
+    F-->M[Log Activity/Note]
+    H-->M
+    K-->M
+    B-->N[Reporting/Analytics: AI Win-Loss Insights]
+    B-->P[Settings/Admin]   
+```
+
+---
+
+## 10. UI Integration Points
+
+| CRM Section           | AI Add-on/UI Element                          | User Action / Output                      |
+|-----------------------|-----------------------------------------------|-------------------------------------------|
+| Contact Detail        | "AI Persona" button/sidebar                   | View generated behavioral profile         |
+| Deal Detail           | "Deal Coach AI" button/card                   | See suggested next steps + rationale      |
+| Deal Closed           | "Win-Loss Explainer" link/inline message      | Review summary & improvement suggestions  |
+| Note/Log/Chat         | "Paste objection" input, "Get response" btn   | Copy suggested, context-aware responses   |
+| Reports               | AI summary cards                              | View trends and explanations across deals |
+
+---
+
+## 11. Notes & Best Practices
+
+- **Contextual Placement:**  
+  Place AI features where they're most useful and discoverable in the workflow, not buried in menus.
+
+- **Explainable AI:**  
+  Always include reasoning behind AI suggestions to foster user trust.
+
+- **Speed:**  
+  Reduce latency for AI responses (<2 seconds ideal).
+
+- **User Feedback Loop:**  
+  Allow users to rate and provide feedback on AI suggestions for continuous improvement.
+
+- **Customizability:**  
+  Admin-facing toggles for enabling/disabling add-ons by role or workflow.
+
+- **Accessibility & Mobile Support:**  
+  Ensure all AI functionality is easy to access on both desktop and mobile devices.
+
+---
+
+
+---

@@ -1,0 +1,280 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Product Requirements Document (PRD): B2B CRM with AI Add-ons
+
+## 1. Product Overview
+A B2B CRM (Customer Relationship Management) web application with core modules for Contact, Organization (Company), and Deal Management; a clean dashboard and sales pipeline; task and activity tracking; PDF reporting; and multiple role-based user experiences. AI add-ons (using OpenAI via backend RESTful API) will provide advanced insights such as Deal Coaching, Persona Builder, Objection Handling, and Win/Loss explanations.
+
+- Tech:  
+  - **Frontend:** React, Shadcn+Tailwind, Redux  
+  - **Backend:** Node.js, Express, Sequelize  
+  - **DB:** SQLite (Dev), PostgreSQL (Prod)
+  - **AI Services:** OpenAI (prompt templates configurable)
+  - **Testing:** Jest (unit & integration)
+  - **Docs:** Swagger for API, README.md
+
+---
+
+## 2. User Roles, Permissions, Authentication
+
+### Roles:
+- **Admin:** Full CRUD on all entities, user & configuration management, AI add-ons
+- **Sales:** CRU (Create, Read, Update) on all entities, AI add-ons
+- **Support:** CRU on all entities, AI add-ons
+
+### Permissions Table:
+
+| Role     | Contacts | Deals | Organizations | Tasks | Users | Reports | AI Add-ons  |
+|----------|----------|-------|---------------|-------|-------|---------|-------------|
+| Admin    | CRUD     | CRUD  | CRUD          | CRUD  | CRUD  | CRUD    | Full        |
+| Sales    | CRU      | CRU   | CRU           | CRU   | Read  | Read    | Full        |
+| Support  | CRU      | CRU   | CRU           | CRU   | Read  | Read    | Full        |
+
+_No restrictions on entity access; users can see/edit all records unless future features are added._
+
+### Authentication
+
+- **Method:** Email + Password
+- **Backend:** JWT authorization with refresh token model
+- **Password flow:** Secure hash; refresh tokens required, with expiry and rotation
+
+---
+
+## 3. Data Model & Relationships
+
+See schema below. All foreign keys must enforce referential integrity.
+
+```sql
+users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(100),
+    role VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP
+);
+
+organizations (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    industry VARCHAR(100),
+    website VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+contacts (
+    id SERIAL PRIMARY KEY,
+    organization_id INTEGER REFERENCES organizations(id),
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255),
+    phone VARCHAR(50),
+    title VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    assigned_to INTEGER REFERENCES users(id)
+);
+
+contact_personas (
+    id SERIAL PRIMARY KEY,
+    contact_id INTEGER REFERENCES contacts(id),
+    communication_preferences TEXT,
+    pain_points TEXT,
+    personality_summary TEXT,
+    sales_approach_tips TEXT,
+    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+deals (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    organization_id INTEGER REFERENCES organizations(id),
+    contact_id INTEGER REFERENCES contacts(id),
+    owner_id INTEGER REFERENCES users(id),
+    value DECIMAL(15,2),
+    expected_close_date DATE,
+    stage VARCHAR(50) NOT NULL,
+    probability INTEGER,
+    status VARCHAR(50) DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+deal_stages (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    order_index INTEGER NOT NULL,
+    probability INTEGER
+);
+
+deal_coach_recommendations (
+    id SERIAL PRIMARY KEY,
+    deal_id INTEGER REFERENCES deals(id),
+    recommendation TEXT NOT NULL,
+    rationale TEXT,
+    priority INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    implemented BOOLEAN DEFAULT FALSE
+);
+
+activities (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(50) NOT NULL, -- call, email, meeting, note
+    subject VARCHAR(255),
+    description TEXT,
+    related_to_type VARCHAR(50), -- deal, contact, organization
+    related_to_id INTEGER,
+    created_by INTEGER REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    due_date TIMESTAMP,
+    status VARCHAR(50)
+);
+
+objections (
+    id SERIAL PRIMARY KEY,
+    deal_id INTEGER REFERENCES deals(id),
+    contact_id INTEGER REFERENCES contacts(id),
+    objection_text TEXT NOT NULL,
+    ai_response TEXT,
+    was_used BOOLEAN DEFAULT FALSE,
+    feedback TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+win_loss_analysis (
+    id SERIAL PRIMARY KEY,
+    deal_id INTEGER REFERENCES deals(id),
+    outcome VARCHAR(50) NOT NULL, -- won, lost
+    contributing_factors TEXT,
+    ai_summary TEXT,
+    improvement_suggestions TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+tasks (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    assigned_to INTEGER REFERENCES users(id),
+    related_to_type VARCHAR(50), -- deal, contact, organization
+    related_to_id INTEGER,
+    due_date TIMESTAMP,
+    status VARCHAR(50),
+    priority VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP
+);
+```
+
+---
+
+## 4. AI Add-ons: API, Integration & Flow
+
+**All AI features exposed via backend REST API (Node.js/Express). Backend calls OpenAI, prompt templates configurable (.env or DB preferred). No AI logs required to be persisted.**
+
+#### **Deal Coach AI**
+- **Input:** `{ name, value, expected_close_date, stage, probability, activities[] }`
+- **Output:** `{ recommendation, rationale, priority }`
+
+#### **Persona Builder AI**
+- **Input:** All past `activities[]` for a contact
+- **Output:** `{ communication_preferences, pain_points, sales_approach_tips }`
+
+#### **Objection Handler AI**
+- **Input:** `objection_text`
+- **Output:** `{ text }` (suggested response)
+
+#### **Win-Loss Explainer AI**
+- **Input:** Closed deal data & related activities
+- **Output:** `{ ai_summary, improvement_suggestions }`
+
+---
+
+## 5. Frontend: Pages, Routes & UI
+
+- `/dashboard`: CRM overview, charts/cards (shadcn)
+- `/contacts`: Search, list, filter contacts; detail and edit page; link to organization, show persona builder
+- `/deals`: Kanban/board of pipeline, detail/edit page, Deal Coach, objections, win-loss explainer
+- `/reports`: Pipeline summary, win-loss, user activities. Export as simple PDF.
+
+**Use Shadcn UI Components + Tailwind for all UI (see components folder). Responsive not required.**
+
+---
+
+## 6. State Management
+
+- **Redux** manages auth, contacts, deals, tasks, companies, reports, aiSuggestions, and ui.
+- Data fetched/updated with asyncThunks; selectors for derived data.
+- Each slice handles its own loading and error states.
+- Use Axios for API with interceptors for JWT token refresh.
+- No persisted redux state.
+
+---
+
+## 7. Testing
+
+- Scaffold unit & integration tests (Jest)
+- Adequate tests for redux slices, services, backend routes, and business logic
+
+---
+
+## 8. Reporting & PDF Export
+
+- MVP: PDF export from `/reports` page
+- Table/report should show pipeline summary, win/loss rates, activity by user
+- (No CSV export required)
+
+---
+
+## 9. Seeding & Demo Data
+
+- Provide dev/demo seed scripts (for all entities and at least 2-3 demo users in each role)
+
+---
+
+## 10. Documentation & API
+
+- Auto-generate Swagger/OpenAPI docs for all backend endpoints
+- Developer/user docs as README.md files in both client and server folders
+
+---
+
+## 11. Logging & Error Handling
+
+- Use Winston for backend logging
+- Instrument backend for error logging (integrate with Sentry)
+
+---
+
+## 12. Config & Environments
+
+- All configs via .env files
+- Strict separation of dev and prod envs (different DB, keys, API endpoints, etc.)
+
+---
+
+## 13. Out-of-Scope
+
+- No B2C, no support tickets, no email/calendar integration, no i18n, no password reset flow, no GDPR/data anonymization, no mobile/responsive requirement in MVP.
+
+---
+
+## 14. Acceptance Criteria
+
+- All major features, entities, and flows implemented as above
+- All API endpoints documented via Swagger
+- All flows for AI Add-ons (Deal Coach, Persona Builder, Objection Handler, Win-Loss Explainer) as REST endpoints, prompt templates configurable
+- Shadcn+Tailwind UI, using atomic components, covers all CRUD and primary actions
+- Tests scaffolded and running via npm/yarn
+- Seed data scripts provided
+- Logs/integration with Winston and Sentry
+- PDF export for main reports
+- README docs for setup and usage
+
+---
