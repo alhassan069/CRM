@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Acquisition CRM Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'IBM Plex Sans', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0F62FE;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Doctor Acquisition CRM System Flow</h1>
+        
+        <div class="mermaid">
+            flowchart TD
+                subgraph "Authentication"
+                    A[Login] --> B{Authenticate}
+                    B -->|Success| C[Dashboard]
+                    B -->|Failure| A
+                end
+                
+                subgraph "User Roles"
+                    C --> D[Sales Rep Dashboard]
+                    C --> E[Sales Admin Dashboard]
+                end
+                
+                subgraph "Lead Management"
+                    F[Create Lead] --> G[Lead Profile]
+                    H[Upload CSV] -->|Bulk Import| I[Leads List]
+                    I --> G
+                    G --> J[Update Status]
+                    G --> K[Log Activity]
+                    G --> L[Create Task]
+                end
+                
+                subgraph "AI Features"
+                    G --> M[Deal Coach AI]
+                    G --> N[Customer Persona]
+                    G --> O[Objection Handler]
+                    P[Reports] --> Q[Win-Loss Explainer]
+                end
+                
+                D --> F
+                E --> F
+                E --> H
+                D --> I
+                E --> I
+                E --> P
+                D -->|Limited| P
+                
+                classDef primary fill:#0F62FE,stroke:#0F62FE,color:white;
+                classDef secondary fill:#C1C7CD,stroke:#C1C7CD,color:black;
+                classDef accent1 fill:#82CFFF,stroke:#82CFFF,color:black;
+                classDef accent2 fill:#BE95FF,stroke:#BE95FF,color:black;
+                classDef accent3 fill:#3DDBD9,stroke:#3DDBD9,color:black;
+                
+                class A,B,C primary;
+                class D,E,F,G,H,I,J,K,L secondary;
+                class M,N,O,P,Q accent2;
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'cardinal',
+            }
+        });
+    </script>
+</body>
+</html> 

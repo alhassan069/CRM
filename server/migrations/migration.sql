@@ -1,3 +1,0 @@
-CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER NOT NULL auto_increment , `name` VARCHAR(255), `email` VARCHAR(255) NOT NULL UNIQUE, `password` VARCHAR(255), `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS `refresh_tokens` (`id` INTEGER NOT NULL auto_increment , `token` VARCHAR(255) NOT NULL UNIQUE, `expires_at` DATETIME NOT NULL, `revoked` TINYINT(1) DEFAULT false, `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, `user_id` INTEGER, PRIMARY KEY (`id`), FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;

@@ -1,0 +1,251 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Backend System Design Document
+
+## Project: Doctor Acquisition CRM (MVP with AI)
+
+---
+
+## 1. Tech Stack
+
+* **Language**: JavaScript (Node.js)
+* **Framework**: Express.js
+* **ORM**: Sequelize
+* **Database**: MySQL
+* **Authentication**: JWT (optional fallback: session-based)
+* **External APIs**: OpenAI API (for AI features)
+* **CSV Upload**: Multer + fast-csv
+
+---
+
+## 2. Database Schema
+
+### Tables:
+
+#### `users`
+
+| Column         | Type         | Constraints                  |
+| -------------- | ------------ | ---------------------------- |
+| id             | INT          | PK, AUTO\_INCREMENT          |
+| username       | VARCHAR(50)  | UNIQUE, NOT NULL             |
+| password\_hash | TEXT         | NOT NULL                     |
+| name           | VARCHAR(100) | NOT NULL                     |
+| email          | VARCHAR(100) | UNIQUE, NULLABLE             |
+| role\_id       | INT          | FK → `roles(id)`             |
+| created\_at    | DATETIME     | DEFAULT CURRENT\_TIMESTAMP   |
+| updated\_at    | DATETIME     | ON UPDATE CURRENT\_TIMESTAMP |
+
+
+#### `roles`
+
+| Column | Type        | Constraints            |
+| ------ | ----------- | ---------------------- |
+| id     | INT         | PK, AUTO\_INCREMENT    |
+| name   | VARCHAR(20) | UNIQUE ("rep", "admin") |
+
+
+#### `leads`
+
+| Column                     | Type         | Constraints                          |
+| -------------------------- | ------------ | ------------------------------------ |
+| id                         | INT          | PK, AUTO\_INCREMENT                  |
+| assigned\_to               | INT          | FK → `users(id)`, NULLABLE           |
+| doctor\_name               | VARCHAR(100) |                                      |
+| clinic\_name               | VARCHAR(100) |                                      |
+| specialty                  | VARCHAR(100) |                                      |
+| contact\_number            | VARCHAR(20)  |                                      |
+| email                      | VARCHAR(100) |                                      |
+| city                       | VARCHAR(100) |                                      |
+| source\_of\_lead           | ENUM         | ('Website Form', 'Cold Call', etc.)  |
+| initial\_notes             | TEXT         |                                      |
+| years\_of\_experience      | INT          |                                      |
+| clinic\_type               | ENUM         | ('single-doctor', 'multi-specialty') |
+| preferred\_comm\_channel   | ENUM         | ('Phone', 'Email', 'Whatsapp')       |
+| estimated\_patient\_volume | INT          |                                      |
+| uses\_existing\_emr        | BOOLEAN      |                                      |
+| specific\_pain\_points     | TEXT         |                                      |
+| referral\_source           | VARCHAR(255) |                                      |
+| status\_id                 | INT          | FK → `lead_statuses(id)`             |
+| status\_level              | TINYINT      | 1–6                                  |
+| reason\_for\_loss          | VARCHAR(50)  | NULLABLE                             |
+| created\_at                | DATETIME     | DEFAULT CURRENT\_TIMESTAMP           |
+| updated\_at                | DATETIME     | ON UPDATE CURRENT\_TIMESTAMP         |
+
+
+#### `lead_statuses`
+
+| Column | Type        | Constraints               |
+| ------ | ----------- | ------------------------- |
+| id     | INT         | PK, AUTO\_INCREMENT       |
+| label  | VARCHAR(50) | UNIQUE (e.g., "New Lead") |
+| level  | TINYINT     | (1 to 6)                  |
+
+
+#### `activities`
+
+| Column         | Type         | Constraints                              |
+| -------------- | ------------ | ---------------------------------------- |
+| id             | INT          | PK, AUTO\_INCREMENT                      |
+| lead\_id       | INT          | FK → `leads(id)`                         |
+| user\_id       | INT          | FK → `users(id)`                         |
+| type           | ENUM         | ('Call', 'Email', 'WhatsApp', 'Meeting') |
+| activity\_time | DATETIME     | NOT NULL                                 |
+| duration\_mins | INT          | NULLABLE (for calls)                     |
+| outcome        | VARCHAR(50)  | NOT NULL                                 |
+| summary        | VARCHAR(255) | NOT NULL                                 |
+| full\_notes    | TEXT         | NULLABLE                                 |
+| created\_at    | DATETIME     | DEFAULT CURRENT\_TIMESTAMP               |
+
+
+#### `tasks`
+
+| Column       | Type        | Constraints                  |
+| ------------ | ----------- | ---------------------------- |
+| id           | INT         | PK, AUTO\_INCREMENT          |
+| lead\_id     | INT         | FK → `leads(id)`             |
+| assigned\_to | INT         | FK → `users(id)`             |
+| task\_type   | VARCHAR(50) | e.g., 'Follow-up Call'       |
+| due\_date    | DATE        | NOT NULL                     |
+| due\_time    | TIME        | NOT NULL                     |
+| description  | TEXT        | NOT NULL                     |
+| is_complete  | BOOLEAN     | DEFAULT False                |
+| priority     | ENUM        | ('High', 'Medium', 'Low')    |
+| created\_at  | DATETIME    | DEFAULT CURRENT\_TIMESTAMP   |
+| updated\_at  | DATETIME    | ON UPDATE CURRENT\_TIMESTAMP |
+
+
+---
+
+## 3. API Routes (REST)
+
+### Auth
+
+* `POST /auth/login` - Login user
+* `POST /auth/logout` - Logout user (if session-based)
+
+### Users
+
+* `GET /users/me` - Get logged-in user's profile
+* `GET /users` - (Admin) List all users
+
+### Leads
+
+* `GET /leads` - List leads (with filters & pagination)
+* `GET /leads/:id` - Get lead details
+* `POST /leads` - Create a lead
+* `PUT /leads/:id` - Update a lead
+* `PATCH /leads/:id/status` - Update lead status (with transition rules)
+* `POST /leads/upload` - Upload CSV leads
+
+### Lead Statuses
+
+* `GET /statuses` - Get all lead statuses
+
+### Activities
+
+* `GET /leads/:id/activities` - List activities for a lead
+* `POST /leads/:id/activities` - Log a new activity
+
+### Tasks
+
+* `GET /tasks` - List tasks (my tasks or team-wide for lead)
+* `POST /tasks` - Create a task
+* `PUT /tasks/:id` - Update a task
+
+### AI Features
+
+* `POST /leads/:id/ai/deal-coach` - Get AI coaching advice
+* `POST /leads/:id/ai/persona` - Generate customer persona
+* `POST /ai/objection-handler` - Get objection handler suggestions
+* `POST /ai/win-loss-report` - Generate win/loss insights
+
+---
+
+## 4. Folder Structure
+
+```
+backend/
+├── src/
+│   ├── controllers/
+│   │   ├── auth.controller.js
+│   │   ├── user.controller.js
+│   │   ├── lead.controller.js
+│   │   ├── activity.controller.js
+│   │   ├── task.controller.js
+│   │   └── ai.controller.js
+│   ├── models/
+│   │   ├── index.js
+│   │   ├── user.js
+│   │   ├── role.js
+│   │   ├── lead.js
+│   │   ├── leadStatus.js
+│   │   ├── activity.js
+│   │   └── task.js
+│   ├── routes/
+│   │   ├── auth.routes.js
+│   │   ├── user.routes.js
+│   │   ├── lead.routes.js
+│   │   ├── activity.routes.js
+│   │   ├── task.routes.js
+│   │   └── ai.routes.js
+│   ├── middlewares/
+│   │   ├── auth.middleware.js
+│   │   ├── role.middleware.js
+│   │   └── error.middleware.js
+│   ├── services/
+│   │   ├── auth.service.js
+│   │   ├── ai.service.js
+│   │   └── csv.service.js
+│   ├── utils/
+│   │   ├── validators.js
+│   │   ├── constants.js
+│   │   └── helpers.js
+│   ├── config/
+│   │   ├── db.config.js
+│   │   └── openai.config.js
+│   └── app.js
+├── .env
+├── .gitignore
+├── package.json
+└── README.md
+```
+
+---
+
+## 5. Security Notes
+
+* Enforce HTTPS
+* Hash passwords using bcrypt
+* Validate all inputs (especially AI prompts, CSVs)
+* Ensure proper access control based on user roles
+* Sanitize user-uploaded CSVs before processing
+
+---
+
+## 6. Deployment Recommendations
+
+* Use Docker for containerization
+* Use PM2 or similar for Node.js process management
+* MySQL hosted via AWS RDS or managed instance
+* Serve with NGINX as reverse proxy
+
+---
+
+## 7. Scalability Notes
+
+* Design API with pagination support
+* Offload AI calls to worker queue in future
+* Add Redis-based caching layer if needed (e.g., AI responses)
+
+---
+
+## 8. Future Enhancements
+
+* OAuth/MFA
+* Activity notifications
+* Automatic AI model retraining
+* Real-time dashboards with WebSocket
+* Email & WhatsApp API integration

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Acquisition CRM - Database ERD</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'IBM Plex Sans', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0F62FE;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Doctor Acquisition CRM - Database ERD</h1>
+        
+        <div class="mermaid">
+            erDiagram
+                USERS {
+                    int id PK
+                    varchar(50) username UK
+                    text password_hash
+                    varchar(100) name
+                    varchar(100) email UK
+                    int role_id FK
+                    datetime created_at
+                    datetime updated_at
+                }
+                
+                ROLES {
+                    int id PK
+                    varchar(20) name UK
+                }
+                
+                LEADS {
+                    int id PK
+                    int assigned_to FK
+                    varchar(100) doctor_name
+                    varchar(100) clinic_name
+                    varchar(100) specialty
+                    varchar(20) contact_number
+                    varchar(100) email
+                    varchar(100) city
+                    enum source_of_lead
+                    text initial_notes
+                    int years_of_experience
+                    enum clinic_type
+                    enum preferred_comm_channel
+                    int estimated_patient_volume
+                    boolean uses_existing_emr
+                    text specific_pain_points
+                    varchar(255) referral_source
+                    int status_id FK
+                    tinyint status_level
+                    varchar(50) reason_for_loss
+                    datetime created_at
+                    datetime updated_at
+                }
+                
+                LEAD_STATUSES {
+                    int id PK
+                    varchar(50) label UK
+                    tinyint level
+                }
+                
+                ACTIVITIES {
+                    int id PK
+                    int lead_id FK
+                    int user_id FK
+                    enum type
+                    datetime activity_time
+                    int duration_mins
+                    varchar(50) outcome
+                    varchar(255) summary
+                    text full_notes
+                    datetime created_at
+                }
+                
+                TASKS {
+                    int id PK
+                    int lead_id FK
+                    int assigned_to FK
+                    varchar(50) task_type
+                    date due_date
+                    time due_time
+                    text description
+                    enum priority
+                    datetime created_at
+                    datetime updated_at
+                }
+                
+                USERS ||--o{ LEADS : "assigns"
+                ROLES ||--o{ USERS : "has"
+                LEAD_STATUSES ||--o{ LEADS : "categorizes"
+                LEADS ||--o{ ACTIVITIES : "has"
+                USERS ||--o{ ACTIVITIES : "logs"
+                LEADS ||--o{ TASKS : "has"
+                USERS ||--o{ TASKS : "assigned_to"
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            er: {
+                useMaxWidth: true,
+                diagramPadding: 20
+            }
+        });
+    </script>
+</body>
+</html> 

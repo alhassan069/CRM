@@ -1,0 +1,249 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# 🧭 Sales Admin User Journey (Doctor CRM)
+
+---
+
+## 🧑‍💼 User Role: Sales Admin
+
+### Primary Responsibilities:
+
+* Create and assign leads to Sales Reps
+* Oversee the entire sales funnel
+* Review performance reports
+* Utilize AI to optimize sales efforts
+* Maintain lead quality and transition discipline
+
+---
+
+## 🔐 1. Login
+
+Same as Sales Rep:
+
+* Enters username and password
+* Redirects to Sales Admin Dashboard upon success
+
+---
+
+## 🏠 2. Dashboard (Sales Admin View)
+
+### Purpose:
+
+Provides a comprehensive overview of team performance, lead funnel health, and tasks.
+
+### Sections:
+
+#### A. Key Metrics (Top Cards)
+
+* **Total New Leads This Week**
+* **Overall Conversion Rate (%)**
+* **Team Demos Scheduled**
+
+#### B. Converted Leads by Rep
+
+* Bar chart or table showing lead conversions grouped by Sales Rep
+
+#### C. Team Tasks List
+
+* Aggregated task list across all reps
+* Columns: Task Type, Assigned Rep, Due Date, Priority
+
+#### D. Navigation Items
+
+* Dashboard
+* Leads
+* Tasks
+* Reports
+* Users (optional in future)
+* Logout
+
+---
+
+## 🗂️ 3. View & Manage All Leads
+
+### Access:
+
+* Navigation bar → Leads
+
+### Table Columns:
+
+* Doctor Name
+* Clinic Name
+* Specialty
+* City
+* Lead Status
+* Last Activity
+* Assigned Rep
+
+### Actions:
+
+* Filter by Sales Rep or Status
+* Sort by Date/Status
+* Reassign Lead to different Sales Rep (dropdown)
+* Open Lead Profile
+
+---
+
+## ➕ 4. Create New Lead
+
+Same form as Sales Rep, but:
+
+### Additional Capability:
+
+* **Assigned To:** dropdown to assign the lead to any Sales Rep
+
+### Behavior:
+
+* On submit, lead is created and assigned immediately
+* Appears in both dashboards (admin and assigned rep)
+
+---
+
+## 📥 5. Bulk Upload Leads via CSV
+
+### Access:
+
+* Leads page → Upload CSV button
+
+### Behavior:
+
+* Upload `.csv` file with all valid fields
+* Backend parses and creates multiple leads
+* Admin selects default assignee (or uses “Unassigned” bucket if allowed)
+
+### Result:
+
+* Leads distributed or held in unassigned state
+* Admin can later assign them manually
+
+---
+
+## 👁️ 6. Lead Profile View (Full Access)
+
+### Same view as Sales Rep, with additions:
+
+#### A. Assignment Controls
+
+* Reassign Sales Rep via dropdown
+* View assigned Rep activity log
+
+#### B. Full Activity Logs
+
+* See activity entries logged by any user
+* No edit/delete for auditability
+
+#### C. Full AI Tools
+
+* Can use or refresh any AI feature:
+
+  * Deal Coach
+  * Persona Generator
+  * Objection Handler
+  * Win-Loss Explainer (via Reports)
+
+---
+
+## 🧾 7. View/Manage Activities
+
+Sales Admin can:
+
+* View all activities for any lead
+* Cannot log activity on behalf of a Sales Rep
+* Cannot delete activities
+
+---
+
+## 📅 8. Manage Tasks (Team-wide)
+
+### Dashboard: “Team Tasks List”
+
+### Capabilities:
+
+* View all tasks across all reps
+* Filter by status, due date, priority, assignee
+* Can create new tasks and assign to any user
+
+### Task Form Fields:
+
+* Same as Sales Rep + can select any user in “Assigned To” field
+
+---
+
+## 📊 9. Reports Page
+
+### Access:
+
+* Navigation bar → Reports
+
+### Components:
+
+#### A. Conversion Funnel
+
+* Bar or funnel chart showing lead drop-off per stage
+
+#### B. Conversion Rate by Source
+
+* Table or chart showing win/loss ratio by lead source
+
+#### C. Converted Leads by Rep
+
+* Compare Sales Rep performance
+
+#### D. Average Time to Convert
+
+* Based on activities/time between creation and conversion
+
+#### E. AI: Win-Loss Explainer
+
+* Button: “Run AI Insights”
+* Output: Summary + bullet points for why deals were won or lost
+* Works on dummy or real data
+* Shows fallback message if data insufficient
+
+---
+
+## 🧠 10. AI Features (All Permissions)
+
+Sales Admins can:
+
+* Use all AI tools in Lead Profile
+* Re-trigger responses
+* View cached suggestions
+* Access team-wide analytics from Win-Loss Explainer
+
+---
+
+## 👥 11. User Access Management (Future Scope)
+
+Not in MVP, but reserved for later:
+
+* Add/remove Sales Reps
+* Manage roles/permissions
+
+---
+
+## 🚪 12. Logout
+
+Same as Sales Rep
+
+---
+
+## ✅ Sales Admin Permissions Table
+
+| Feature               | Sales Admin Access |
+| --------------------- | ------------------ |
+| Create/Edit Leads     | ✅ Yes              |
+| Assign/Reassign Leads | ✅ Yes              |
+| Upload Leads (CSV)    | ✅ Yes              |
+| View/Edit Tasks       | ✅ Yes (anyone)     |
+| Create Tasks for Reps | ✅ Yes              |
+| View/Edit Activities  | ✅ View only        |
+| Use All AI Features   | ✅ Yes              |
+| View Full Reports     | ✅ Yes              |
+
+
+---

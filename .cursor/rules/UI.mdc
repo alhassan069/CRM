@@ -1,0 +1,163 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Frontend UI Implementation Guide
+
+---
+
+## 🧱 Tech Stack
+
+* **Framework:** React (with Next.js)
+* **Styling:** Tailwind CSS + [shadcn/ui](mdc:https:/ui.shadcn.com)
+* **Icons:** [Lucide Icons](mdc:https:/lucide.dev) (pre-integrated in shadcn)
+* **Fonts:** [IBM Plex Sans](mdc:https:/fonts.google.com/specimen/IBM+Plex+Sans) (Primary), [Inter](mdc:https:/rsms.me/inter) (Secondary)
+
+---
+
+## 🎨 Design Language
+
+### Glassmorphism Rules
+
+* Use `backdrop-filter: blur(10px)` with `bg-white/10` or `bg-gray-100/10`
+* Add `border border-white/20` and `shadow-md shadow-white/10`
+* `rounded-xl` or `rounded-2xl` for soft corners
+* Use `hover:scale-[1.02]` and `transition-transform` for interactive elements
+
+### Color Palette
+
+| Purpose              | Color     | Hex       |
+| -------------------- | --------- | --------- |
+| Primary (Background) | Deep Blue | `#0F62FE` |
+| Secondary            | Cool Gray | `#C1C7CD` |
+| Accent 1             | Cyan      | `#82CFFF` |
+| Accent 2             | Purple    | `#BE95FF` |
+| Accent 3             | Teal      | `#3DDBD9` |
+| Background (Light)   | White     | `#FFFFFF` |
+| Background (Dark)    | Gray      | `#121212` |
+
+---
+
+## 📐 Spacing System (8pt Grid)
+
+| Token     | Pixels | Usage                              |
+| --------- | ------ | ---------------------------------- |
+| `space-1` | 4px    | Tight padding or gaps              |
+| `space-2` | 8px    | Compact UI spacing                 |
+| `space-3` | 16px   | Card padding                       |
+| `space-4` | 24px   | Between sections/cards             |
+| `space-5` | 32px   | Major gaps (between rows/sections) |
+| `space-6` | 48px   | Hero or large vertical spacing     |
+
+Use Tailwind spacing tokens like `p-4`, `gap-8`, `mt-12`, etc.
+
+---
+
+## 🔣 Fonts
+
+### Primary: IBM Plex Sans
+
+* [Google Fonts IBM Plex Sans](mdc:https:/fonts.google.com/specimen/IBM+Plex+Sans)
+
+### Secondary: Inter
+
+* [Inter Font](mdc:https:/rsms.me/inter)
+
+Use Tailwind utility classes:
+
+```html
+class="font-plex"
+class="font-inter"
+```
+
+---
+
+## 🧩 UI Components (shadcn)
+
+All components should use [shadcn/ui](mdc:https:/ui.shadcn.com/docs/components).
+
+### Hero Section
+
+* `Heading`, `Text`, `Button`
+* CTA Button: `variant="default"` + glassmorphic background
+
+### Features Section
+
+* Use `Card` component for each feature
+* Place icon (Lucide) on top, title, then text
+* Layout: `grid grid-cols-1 md:grid-cols-3`
+
+### About Section
+
+* `Grid` or `Flex` to align text and image
+* Use `AspectRatio` or `Image` from Next.js
+
+### Testimonials
+
+* Use `Carousel` from shadcn (if available) or custom swiper
+* Each testimonial in a `Card` with background blur
+
+### Contact Section
+
+* Form using `Input`, `Textarea`, and `Button`
+* Centered layout with glassmorphism styling
+
+### Footer
+
+* Simple grid with site links and social icons (Lucide)
+* Dark mode-friendly text contrast
+
+---
+
+## 📦 Folder Structure
+
+```
+app/
+├── staticComponents/
+│   ├── Hero.tsx
+│   ├── Features.tsx
+│   ├── About.tsx
+│   ├── Testimonials.tsx
+│   ├── ContactForm.tsx
+│   └── Footer.tsx
+├── styles/
+│   └── globals.css
+├── pages/
+│   └── index.tsx
+├── lib/
+│   └── utils.ts
+├── public/
+│   └── assets/
+└── ui.config.ts
+```
+
+---
+
+## 📚 Third-Party Tools & Docs
+
+| Tool          | Purpose                | Documentation                                                                                      |
+| ------------- | ---------------------- | -------------------------------------------------------------------------------------------------- |
+| Tailwind CSS  | Utility-first styling  | [https://tailwindcss.com/docs](mdc:https:/tailwindcss.com/docs)                                       |
+| shadcn/ui     | Prebuilt UI components | [https://ui.shadcn.com/docs](mdc:https:/ui.shadcn.com/docs)                                           |
+| Lucide Icons  | Icon system            | [https://lucide.dev/](mdc:https:/lucide.dev)                                                         |
+| IBM Plex Sans | Primary font           | [https://fonts.google.com/specimen/IBM+Plex+Sans](mdc:https:/fonts.google.com/specimen/IBM+Plex+Sans) |
+| Inter Font    | Secondary font         | [https://rsms.me/inter/](mdc:https:/rsms.me/inter)                                                   |
+
+---
+
+## 🧪 Accessibility Notes
+
+* All text must meet WCAG 2.1 AA contrast
+* Glass backgrounds must not make text illegible
+* Add alt text to all images and icons
+* Ensure full keyboard navigability and tab order
+
+---
+
+## ✅ Final Notes
+
+* Stick to minimalism — avoid clutter
+* Use glassmorphism sparingly (only where it enhances perception)
+* Aim for performance — avoid unnecessary gradients or heavy effects
+

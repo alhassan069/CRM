@@ -1,0 +1,158 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+@import url('https://rsms.me/inter/inter.css');
+
+@custom-variant dark (&:is(.dark *));
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles based on UI implementation guide */
+
+:root {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --radius: 0.625rem;
+  
+  /* Color palette from UI guide */
+  --background: #FFFFFF;
+  --foreground: #121212;
+  --primary: #0F62FE;
+  --primary-foreground: #FFFFFF;
+  --secondary: #C1C7CD;
+  --secondary-foreground: #121212;
+  --accent-1: #82CFFF;
+  --accent-2: #BE95FF;
+  --accent-3: #3DDBD9;
+  --muted: #F4F4F4;
+  --muted-foreground: #6F6F6F;
+  --card: #FFFFFF;
+  --card-foreground: #121212;
+  --popover: #FFFFFF;
+  --popover-foreground: #121212;
+  --destructive: #DA1E28;
+  --border: rgba(255, 255, 255, 0.2);
+  --input: #F4F4F4;
+  --ring: #0F62FE;
+  
+  /* Chart colors */
+  --chart-1: #0F62FE;
+  --chart-2: #82CFFF;
+  --chart-3: #BE95FF;
+  --chart-4: #3DDBD9;
+  --chart-5: #C1C7CD;
+  
+  /* Sidebar colors */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #121212;
+  --sidebar-primary: #0F62FE;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F4F4F4;
+  --sidebar-accent-foreground: #121212;
+  --sidebar-border: rgba(255, 255, 255, 0.2);
+  --sidebar-ring: #0F62FE;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent-1);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+.dark {
+  --background: #121212;
+  --foreground: #FFFFFF;
+  --primary: #0F62FE;
+  --primary-foreground: #FFFFFF;
+  --secondary: #C1C7CD;
+  --secondary-foreground: #121212;
+  --accent-1: #82CFFF;
+  --accent-2: #BE95FF;
+  --accent-3: #3DDBD9;
+  --muted: #2C2C2C;
+  --muted-foreground: #A8A8A8;
+  --card: #1E1E1E;
+  --card-foreground: #FFFFFF;
+  --popover: #1E1E1E;
+  --popover-foreground: #FFFFFF;
+  --destructive: #FA4D56;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #0F62FE;
+  
+  /* Chart colors for dark mode */
+  --chart-1: #82CFFF;
+  --chart-2: #BE95FF;
+  --chart-3: #3DDBD9;
+  --chart-4: #0F62FE;
+  --chart-5: #C1C7CD;
+  
+  /* Sidebar colors for dark mode */
+  --sidebar: #1E1E1E;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #0F62FE;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #2C2C2C;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #0F62FE;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  .font-plex {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+  .font-inter {
+    font-family: 'Inter var', 'Inter', system-ui, sans-serif;
+  }
+}

@@ -1,0 +1,268 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Product Requirements Document: Doctor Acquisition CRM (MVP with AI)
+
+**Version:** 1.0
+**Date:** June 3, 2025
+
+---
+
+## 1. Introduction
+
+This document outlines the requirements for the Minimum Viable Product (MVP) of a web-based Customer Relationship Management (CRM) application. The primary purpose of this MVP is to streamline lead management for the sales team focused on acquiring doctors for our medical applications. This MVP will specifically cover the "Leads to Conversion" journey, incorporating foundational AI-powered capabilities from day one.
+
+## 2. Business Goals
+
+The single, primary business goal of this CRM MVP is to **streamline lead management for the sales team** to efficiently convert doctor leads into committed users of our medical app.
+
+A successful MVP at launch will enable the sales team to **log approximately 5-10 leads per day per sales representative**, and for Sales Admins to effectively monitor the conversion funnel.
+
+## 3. Scope (In & Out of MVP)
+
+### 3.1 In Scope (MVP)
+
+* **User Management:** Sales Representative and Sales Admin roles with defined permissions.
+* **Lead Management:**
+    * Lead creation (manual, form capture, bulk upload).
+    * Comprehensive lead data fields.
+    * Defined lead statuses and strict transition rules.
+    * Detailed activity logging (calls, emails, WhatsApp, in-person meetings).
+    * Task and reminder management.
+* **AI-Powered Add-ons:**
+    * Deal Coach AI (AI-generated next steps).
+    * Customer Persona Builder (AI-generated behavioral profiles).
+    * Objection Handler Recommender (AI-suggested responses).
+    * Win-Loss Explainer (AI-explained deal outcomes).
+    * **Note:** These AI features will leverage LLM APIs and operate on initial dummy data (200 records). AI model retraining will be a manual process and is not part of the MVP.
+* **Reporting:** Key sales funnel metrics for Sales Admins.
+* **User Interface (UI):** Desktop web application.
+* **Basic Authentication:** Username/Password login.
+
+### 3.2 Out of Scope (MVP)
+
+The following functionalities are **explicitly out of scope** for this MVP and will be considered in future iterations:
+
+* Doctor Onboarding workflows within the CRM.
+* Doctor Support/Ticketing system.
+* Direct billing integration.
+* Marketing automation beyond simple lead capture forms.
+* "Forgot Password" functionality for user authentication.
+* Multi-factor authentication (MFA).
+* In-app/email notifications for overdue tasks.
+* CRM integration with existing Doctor App or User App.
+* Direct email integration (sending/logging replies automatically).
+* WhatsApp API integration for sending automated messages (logging is in scope).
+* Data backup strategy for the CRM database (as per current decision, though highly discouraged).
+* Sales Reps submitting new objections/successful responses to improve AI knowledge base.
+* Automated AI model retraining pipeline.
+* Mobile application (iOS/Android) beyond responsive web view.
+
+## 4. Target Users & Roles
+
+The primary users of this CRM MVP are internal sales team members.
+
+* **Sales Representative (5-10 users):**
+    * **Permissions:** Create, View, Edit, Log Activities for assigned leads.
+    * **Dashboard:** View personal tasks and lead status overview.
+* **Sales Admin/Manager (1-2 users):**
+    * **Permissions:** Create, View, Edit, Assign any lead. View all reports. Access all AI features.
+    * **Dashboard:** View team-level metrics and overall conversion funnel.
+
+## 5. Core Functionality & Features
+
+### 5.1 Lead Management
+
+#### 5.1.1 Lead Creation & Data Fields
+
+* **Creation Methods:**
+    * **Manual Entry:** Sales Reps can manually create a new lead record.
+    * **Digital Channel:** System will capture lead data from web forms (external to CRM, but data pushed into CRM. Just make an api endpoint for it).
+    * **List Upload:** Ability to bulk import leads (via CSV).
+* **Lead Data Fields:**
+    * **Doctor Name:** Text
+    * **Clinic Name:** Text
+    * **Specialty:** Text (free text, or suggested dropdown if LLM API can provide initial options)
+    * **Primary Contact Number:** Text (allow various Indian formats, e.g., +91-XXXXXXXXXX, XXXXXXXXXX)
+    * **Email:** Text (email format validation)
+    * **City:** Text (free text, or suggested dropdown if LLM API can provide initial options)
+    * **Source of Lead:** Predefined Dropdown with initial options: ["Website Form", "Cold Call", "Referral", "LinkedIn", "Medical Conference", "Blogs", "Youtube"].
+    * **Initial Notes:** Text (multiline)
+    * **Years of Experience:** Number (integer)
+    * **Clinic Type:** ENUM (single-doctor, multi-specialty)
+    * **Preferred Communication Channel:** ENUM (Phone, Email, Whatsapp)
+    * **Estimated Patient Volume:** Number (integer)
+    * **Existing EMR/App usage:** Boolean (Yes/No)
+    * **Specific Pain Points:** Text (multiline)
+    * **Referral Source:** Text (if another customer, allow Name/ID to be entered; no direct linking to customer records for MVP).
+* **Mandatory Fields:** None of the above fields are mandatory for lead creation.
+
+#### 5.1.2 Lead Status Definitions & Transitions
+
+* **Defined Lead Statuses (Levels):**
+    * **Level 1:** "New Lead"
+    * **Level 2:** "Contacted - No Response," "Contacted - Not Interested", "Contacted - Follow Up Needed","Contacted - Interested,"
+    * **Level 3:** "Demo Scheduled"
+    * **Level 4:** "Post-Demo Follow-up," "Objections Being Addressed," "Verbal Commitment"
+    * **Level 5:** "CONVERTED - Committed"
+    * **Level 6:** "Lost"
+* **Strict Transition Rules:**
+    * A lead status can **only move from a lower level to a higher level**.
+        * Example: "Demo Scheduled" (Level 3) cannot transition back to "Contacted - Interested" (Level 2).
+    * A lead can change status **within the same level**.
+        * Example: "Post-Demo Follow-up" can be changed to "Objections Being Addressed."
+    * **Transition to "Lost" (Level 6):** A lead can only transition to "Lost" from either:
+        * "Contacted - Not Interested" (Level 2)
+        * "Post-Demo Follow-up" (Level 4)
+* **Mandatory "Reason for Loss":** When a lead is marked "Lost," a mandatory dropdown field for "Reason for Loss" must appear with options: "Budget," "Competitor," "No Need," "Not a Good Fit," "Unresponsive."
+* **Permissions:** All CRM users (Sales Reps and Sales Admins) have permission to change any lead status, adhering to the transition rules.
+
+#### 5.1.3 Activity Logging
+
+* **Activity Types to Log:**
+    * Calls
+    * Emails
+    * WhatsApp messages
+    * In-person meetings
+* **Required Data for Each Activity:**
+    * **Date/Time:** Datetime picker (mandatory).
+    * **Duration (for Calls):** Number (minutes, optional).
+    * **Outcome:** Dropdown (e.g., "Successful," "Unsuccessful," "Left message," "Rescheduled") (mandatory).
+    * **Summary:** Short text field (mandatory).
+    * **Full Notes:** Multiline text field (optional, for detailed notes).
+* **Association:** All logged activities must be associated with a specific lead and can be associated with tasks or reminders.
+
+#### 5.1.4 Task & Reminder Management
+
+* **Task Types:** "Initial Outreach," "Detailed/Demo Meet," "Follow-up Call," "Send Pricing."
+* **Required Task Fields:**
+    * **Task Type:** Dropdown (mandatory).
+    * **Due Date:** Date picker (mandatory).
+    * **Due Time:** Time picker (mandatory).
+    * **Description:** Text (multiline, mandatory).
+    * **Priority:** Dropdown (High/Medium/Low, mandatory).
+    * **Linked Lead:** Automatically linked to the lead the task is created for.
+    * **Assigned to:** Dropdown of all CRM users (Sales Reps, Sales Admins) (mandatory).
+* **Notifications:** Tasks will appear on the assigned user's dashboard; no email notifications for overdue tasks for MVP.
+
+### 5.2 AI-Powered Add-ons (Leveraging LLM APIs)
+
+**General AI Implementation Notes:**
+* AI features will primarily rely on external LLM APIs (e.g., OpenAI, Google Gemini, etc.).
+* Initial functionality will be achieved by prompting these APIs with current lead data and predefined rules/dummy data.
+* AI model retraining based on new data will be a manual process outside the MVP's scope.
+* **Initial Data for AI:** The CRM will be seeded with approximately **200 dummy records** (leads with varied statuses, activities, and notes) to enable basic AI functionality from day one.
+
+#### 5.2.1 Deal Coach AI
+
+* **Functionality:** Upon clicking a dedicated button ("Get AI Coach Advice") on a lead's profile, the AI will suggest the next best steps to improve close probability.
+* **Parameters for AI Consideration (Initial):** Lead Status, time in current status, number of interactions, identified pain points, Sales Rep's prior activities (to avoid suggesting already completed steps).
+* **Output:** Concise, actionable recommendations for the next step.
+    * **Examples of Next Steps:** "Schedule a demo," "Send pricing details," "Address 'cost' objection," "Follow-up via WhatsApp."
+
+#### 5.2.2 Customer Persona Builder
+
+* **Functionality:** Upon clicking a dedicated button ("Generate Customer Persona") on a lead's profile, the AI will auto-generate a behavioral profile.
+* **Attributes/Categories:** Communication Preference, Decision-Making Style, Tech Adoption Level, Primary Pain Points, Value Proposition Focus.
+* **Interaction History Priority:** Notes from calls and physical meetings, content of emails, WhatsApp chats.
+* **Sparse Data Handling:** If interaction history is sparse for a new lead, the AI should display a "Basic persona based on specialty/city data only" (or similar default, non-null message if no data exists).
+
+#### 5.2.3 Objection Handler Recommender
+
+* **Functionality:** A dedicated module or field where Sales Reps can paste a customer objection, and the AI suggests convincing responses.
+* **Knowledge Base:** Will be populated initially by a predefined list of common objections and ideal responses provided by the product team.
+* **Output Format:** A list of **3 bullet points** suggesting responses.
+
+#### 5.2.4 Win-Loss Explainer
+
+* **Functionality:** Located within the "Reports" section, this AI will explain patterns in why deals were won or lost.
+* **Factors for AI Consideration:** Lead Source, Number of Interactions, Time to Convert, Specific Pain Points/Objections raised, Sales Rep involved.
+* **Output Format:** A summary paragraph, followed by bullet points of key contributing factors for wins and separate bullet points for losses.
+* **Minimum Threshold for Insights (MVP):** The AI should attempt to provide insights even with a **single won/lost deal** (though quality will improve with volume). It should clearly state if insights are limited due to low data.
+
+## 6. User Interface (UI) & User Experience (UX)
+
+### 6.1 Platform
+
+* **Primary Platform:** Web Application (Desktop only for MVP).
+* **Responsiveness:** Not required for mobile/tablet screens in MVP.
+
+### 6.2 UI Elements & Layout
+
+* **Dashboard (Sales Rep):**
+    * "My Tasks" list (displaying tasks assigned to the current user, sortable by due date/priority).
+    * "Leads by Status" pie chart (showing personal leads by their current status).
+    * "Daily Activities" bar chart (visualizing personal logged activities per day/week).
+* **Dashboard (Sales Admin):**
+    * "Total New Leads This Week" (numeric display).
+    * "Overall Conversion Rate" (percentage display).
+    * "Team Demos Scheduled" (numeric display).
+    * "Converted Leads by Rep" (bar chart or table).
+    * A consolidated "Team Tasks" list (displaying all tasks assigned to the team, sortable by due date/priority).
+* **Lead List View:**
+    * **Columns:** Doctor Name, Clinic Name, Specialty, City, Lead Status, Last Activity Date, Assigned Rep.
+    * **Functionality:** Searchable (by Name, Clinic), Sortable (by Name, Status, Last Activity Date).
+* **Lead Profile View:**
+    * **Layout:** Organized into clear sections:
+        * **Contact Info:** Basic lead details (Name, Clinic, Contact, Specialty, etc.).
+        * **Lead Status:** Prominently displayed dropdown for status changes.
+        * **Activity Log Tab:** Chronological list of all logged activities for this lead.
+        * **Notes Section:** Dedicated area for all general notes related to the lead.
+        * **AI Coach Advice Panel:** A dedicated section displaying AI suggestions, with a button to trigger/refresh.
+        * **Customer Persona Panel:** A dedicated section displaying the AI-generated persona, with a button to trigger/refresh.
+        * **Objection Handler Panel:** An input field to paste objections and a display area for AI suggestions.
+    * **Input Fields:** Use appropriate types (text boxes, dropdowns, date pickers, multi-select as per data field definitions).
+    * **Buttons:** Clearly labeled buttons for all actions (e.g., "Create Lead," "Log Activity," "Update Status," "Schedule Demo," "Get AI Coach Advice," "Generate Customer Persona").
+* **Visual Indicators:**
+    * **Red:** "Contacted - Not Interested" lead status, "Lost" lead status, Overdue tasks.
+    * **Green:** "CONVERTED - Committed" lead status, Successfully logged activities (e.g., "Successful call").
+    * **Neutral:** All other statuses and UI elements.
+
+### 6.3 Navigation
+
+* **Main Navigation Items:** Dashboard, Leads, Reports, Users.
+* **Navigation Flow:** Clicking on a lead in the "Lead List View" should navigate the user to the individual "Lead Profile View."
+
+## 7. Technical & System Requirements
+
+### 7.1 Authentication & Authorization
+
+* **Login Method:** Username and Password.
+* **Roles & Permissions:**
+    * **Sales Rep:** Can Create, View, Edit, Log Activities for leads assigned to them. Cannot assign leads to others.
+    * **Sales Admin:** Can Create, View, Edit, Assign any lead. Can view all reports.
+* **"Forgot Password" / MFA:** Not required for MVP.
+
+### 7.2 Data Storage
+
+* **Database Technology:** Relational database, specifically **MySQL**.
+* **Data Backup:** No explicit data backup strategy is required for the MVP by the AI coding agent (this is a high-risk decision).
+
+### 7.3 Integrations (for MVP)
+
+* **External LLM APIs:** Integration with OpenAI LLM APIs for AI features. API keys and endpoints will be provided.
+* **Other Integrations:** No direct integrations with existing Doctor/User apps, email systems, or WhatsApp API for automated messages are required for MVP.
+
+### 7.4 Performance & Scalability (MVP Level)
+
+* **Response Times:** Most actions (e.g., loading a lead profile, saving an activity) should complete within **2 seconds**.
+* **Active Leads:** The MVP should be able to manage approximately **500 active leads** simultaneously without significant performance degradation.
+
+### 7.5 Security & Compliance
+
+* **Minimum Security Standards:**
+    * All web traffic must use **HTTPS**.
+    * Implement **basic user authentication** for access control.
+    * Ensure **no public access to the database**.
+    * Adhere to relevant Indian IT laws, specifically the **IT Act, 2000**, for professional data handling and secure coding practices.
+
+## 8. Future Considerations (Briefly Mentioned in PRD)
+
+The CRM's architecture should be designed with future expansion in mind to accommodate modules such as:
+* Comprehensive doctor onboarding workflows.
+* Integrated doctor support/ticketing system.
+* Enhanced AI capabilities (e.g., automated AI model retraining, more sophisticated predictive analytics).
+
+---

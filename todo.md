@@ -1,153 +1,92 @@
-# CRM Application Development Todo List (Serial Order)
+# 📋 Doctor CRM Development Todo
 
-## Phase 1: Backend Foundation
-### 1.1 Database Schema Implementation
-   - [x] Edit the User model to add role 
-   - [x] Create organizations model and migration
-   - [x] Create contacts model and migration
-   - [x] Create deals model and migration
-   - [x] Create activities model and migration
-   - [x] Create tasks model and migration
-   - [x] Create contact_personas model and migration
-   - [x] Create deal_coach_recommendations model and migration
-   - [x] Create objections model and migration
-   - [x] Create win_loss_analysis model and migration
-   - [x] Implement all model relationships and constraints
+## 🚀 Phase 1: Initial Setup
+- [x] Setup Node.js and Express backend
+- [x] Configure environment variables with dotenv
+- [x] Connect to MySQL database
+- [x] Setup Sequelize ORM
+- [x] Setup React frontend with vite.
+- [x] Configure Tailwind CSS with shadcn
+- [x] Install and setup Lucide icons
+- [x] Create basic route placeholders (backend and frontend)
 
-### 1.2. Authentication & Authorization Enhancement
-   - [x] Basic JWT authentication
-   - [x] Role-based access control implementation
-   - [x] Permission middleware for protected routes
-   - [x] User role management endpoints
+## 🏗️ Phase 2: Database Schema Implementation
+- [x] Define User and Role models
+- [x] Define Lead and LeadStatus models
+- [x] Define Activity model
+- [x] Define Task model
+- [x] Implement model associations and constraints
+- [x] Create database sync script
+- [x] Add role seeding script (rep, admin)
+- [x] Write model validation tests
 
-## Phase 2: Core Backend API
-### 2.1 Organizations API
-   - [x] Create organization endpoint
-   - [x] Get organization endpoint
-   - [x] Update organization endpoint
-   - [x] Delete organization endpoint
-   - [x] List organizations endpoint
+## 🔒 Phase 3: Authentication Flow
+- [x] Backend: Implement JWT authentication routes
+- [x] Backend: Create auth middleware for route protection
+- [x] Frontend: Build login page UI
+- [x] Frontend: Implement authentication state management
+- [x] Frontend: Create protected route wrapper
 
-### 2.2 Contacts API
-   - [x] Create contact endpoint
-   - [x] Get contact endpoint
-   - [x] Update contact endpoint
-   - [x] Delete contact endpoint
-   - [x] List contacts endpoint
-   - [x] Contact search endpoint
+## 📊 Phase 4: Dashboard Flow
+- [x] Backend: Create endpoints for dashboard metrics
+- [x] Backend: Implement task listing API
+- [x] Backend: Create lead status aggregation API
+- [x] Frontend: Build layout shell with navbar and sidebar
+- [x] Frontend: Configure Shadcn if not available
+- [x] Frontend: Implement Sales Rep dashboard Using ShadCN
+- [x] Frontend: Create "My Tasks" component
+- [x] Frontend: Create "Leads by Status" chart
+- [x] Frontend: Create "Daily Activities" chart
 
-### 2.3 Deals API
-   - [x] Create deal endpoint
-   - [x] Get deal endpoint
-   - [x] Update deal endpoint
-   - [x] Delete deal endpoint
-   - [x] List deals endpoint
-   - [x] Update deal stage endpoint
-   - [x] Deal search endpoint
+## 👥 Phase 5: Lead Management Flow
+- [x] Backend: Implement CRUD API for leads
+- [x] Backend: Create lead status update route with validation rules
+- [x] Backend: Create lead filtering and search API
+- [x] Frontend: Build leads table UI with filtering/searching
+- [x] Frontend: Create lead profile view
+- [x] Frontend: Implement contact info section
+- [x] Frontend: Build status update dropdown with validation
+- [x] Frontend: Create notes section
 
-### 2.4 Activities & Tasks API
-   - [x] Create activity endpoint
-   - [x] Get activity endpoint
-   - [x] Update activity endpoint
-   - [x] Delete activity endpoint
-   - [x] List activities endpoint
-   - [x] Create task endpoint
-   - [x] Get task endpoint
-   - [x] Update task endpoint
-   - [x] Delete task endpoint
-   - [x] List tasks endpoint
+## 📝 Phase 6: Activity Logging Flow
+- [x] Backend: Create activity logging API
+- [x] Backend: Implement activity retrieval by lead
+- [x] Frontend: Build activity log tab in lead profile
+- [x] Frontend: Create activity form modal
+- [x] Frontend: Implement activity history display
 
-## Phase 3: AI Integration
-### 3.1 OpenAI Setup
-   - [ ] Set up OpenAI API integration
-   - [ ] Create AI service utilities
-   - [ ] Implement prompt templates
+## ✅ Phase 7: Task Management Flow
+- [x] Backend: Create task creation and assignment API
+- [x] Backend: Implement task listing and filtering
+- [x] Frontend: Build task form component
+- [x] Frontend: Create task panel in lead profile
+- [x] Frontend: Implement task display on dashboard
 
-### 3.2 AI Feature Endpoints
-   - [ ] Deal Coach AI endpoint
-   - [ ] Persona Builder AI endpoint
-   - [ ] Objection Handler AI endpoint
-   - [ ] Win-Loss Explainer AI endpoint
+## 🧠 Phase 8: AI Integration Flow
+- [x] Backend: Integrate OpenAI
+- [x] Backend: Implement Deal Coach AI endpoint
+- [x] Backend: Create Customer Persona Builder endpoint
+- [x] Backend: Build Objection Handler endpoint
+- [x] Backend: Develop Win-Loss Explainer endpoint
+- [x] Frontend: Create AI panels in lead profile
+- [x] Frontend: Implement AI response display components
+- [x] Frontend: Add fallback states for AI failures
+- [x] Frontend: Integrate the AI Components in our user flow
 
-## Phase 4: Frontend Foundation
-### 4.1 Redux Setup
-   - [x] Set up Redux store
-   - [x] Implement auth slice
-   - [x] Implement contacts slice
-   - [x] Implement deals slice
-   - [x] Implement organizations slice
-   - [x] Implement activities slice
-   - [x] Implement tasks slice
+## 👑 Phase 9: Admin Features Flow
+- [x] Backend: Create lead assignment API
+- [x] Backend: Implement reporting endpoints
+- [ ] Frontend: Build Sales Admin dashboard
+- [x] Frontend: Create lead assignment controls
+- [x] Frontend: Implement Reports page
+- [x] Frontend: Build conversion funnel chart
+- [x] Frontend: Create "Converted leads by rep" component
 
-### 4.2 UI Component Library
-   - [x] Set up Shadcn UI if not present
-   - [x] Create reusable form components if not present
-   - [x] Create data table components if not present
-   - [x] Create modal components if not present
-   - [x] Create button components if not present
-   - [x] Create input components if not present
-   - [x] Create card components if not present
-
-## Phase 5: Core Frontend Pages
-### 5.1 Dashboard
-   - [x] Dashboard layout
-   - [x] Pipeline summary widget
-   - [x] Recent activities widget
-   - [x] Tasks overview widget
-   - [x] Quick actions
-
-### 5.2 Contacts Management
-   - [x] Contacts list page
-   - [x] Contact detail page
-   - [x] Contact create/edit form
-   - [x] Contact search and filters
-   - [x] Contact persona view
-
-### 5.3 Deals Management
-   - [x] Deals pipeline page
-   - [x] Deal detail page
-   - [x] Deal create/edit form
-   - [x] Deal search and filters
-   - [x] Deal coach integration
-
-### 5.4 Organizations
-   - [x] Organizations list page
-   - [x] Organization detail page
-   - [x] Organization create/edit form
-   - [x] Organization search and filters
-
-### 5.5 Reports
-   - [x] Sales pipeline reports
-   - [x] Deal performance metrics
-   - [x] Contact activity reports
-   - [x] Organization insights
-
-## Phase 6: Enhanced Features
-### 6.1 Backend Enhancements
-   - [ ] PDF report generation
-   - [ ] Activity logging system
-   - [ ] Email notification system
-   - [ ] Data validation middleware
-   - [ ] Rate limiting
-   - [ ] Request validation
-   - [ ] Error handling middleware
-   - [ ] API documentation (Swagger)
-
-### 6.2 Frontend Enhancements
-   - [ ] Advanced filtering and search
-   - [ ] Bulk actions
-   - [ ] Data export functionality
-   - [ ] Activity timeline view
-   - [ ] Loading states
-   - [ ] Error handling
-   - [ ] Success notifications
-   - [ ] Form validation
-
-## Phase 7: Development & Testing
-### 7.1 Development Tools
-   - [ ] Seed data scripts
-   - [ ] Development environment setup
-   - [ ] Testing utilities
-   - [ ] Unit tests for critical functionality
-   - [ ] Integration tests
-   - [ ] API tests
+## 🔍 Phase 10: Enhancements & Polish
+- [ ] Backend: Add CSV upload support for bulk leads
+- [ ] Frontend: Implement CSV upload UI
+- [ ] Frontend: Add confirmation modals for destructive actions
+- [ ] Frontend: Create toast notifications system
+- [ ] Frontend: Add loading skeletons for async content
+- [ ] Test end-to-end flows
+- [ ] Fix UI issues and polish design 
