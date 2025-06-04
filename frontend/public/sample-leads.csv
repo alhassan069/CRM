@@ -1,0 +1,2 @@
+doctor_name,clinic_name,specialty,contact_number,email,city,source_of_lead,initial_notes,years_of_experience,clinic_type,preferred_comm_channel,estimated_patient_volume,uses_existing_emr,specific_pain_points,referral_source
+Dr. Asha Mehta,Sunrise Clinic,Cardiology,+91-9876543210,asha.mehta@example.com,Mumbai,Website Form,First contact,12,single-doctor,Phone,200,true,Needs EMR integration,Referral 

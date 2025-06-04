@@ -16,17 +16,29 @@ exports.getConversionFunnel = async (req, res) => {
     const statuses = await LeadStatus.findAll({
       order: [['level', 'ASC']]
     });
-
+    let colors = [
+      "#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#33FFA1",
+      "#A133FF", "#FF8C33", "#33FF8C", "#8C33FF", "#FF3333",
+      "#33FF33", "#3333FF", "#FF33FF", "#33FFFF", "#FFFF33",
+      "#FF6633", "#33FF66", "#6633FF", "#FF3366", "#33FF99",
+      "#9933FF", "#FF9933", "#33FFCC", "#CC33FF", "#FFCC33",
+      "#33CCFF", "#CCFF33", "#FF33CC", "#33CC99", "#99FF33",
+      "#FF3399", "#3399FF", "#99FF99", "#FF9999", "#9999FF",
+      "#FF66CC", "#66FFCC", "#CC66FF", "#FFCC66", "#66FF99",
+      "#99CCFF", "#FF9966", "#66CCFF", "#CCFF66", "#FF6699",
+      "#6699FF", "#99FF66", "#FF66FF", "#66FFFF", "#FFFF66"
+    ]
     // Get count of leads for each status
     const funnelData = await Promise.all(
-      statuses.map(async (status) => {
+      statuses.map(async (status, index) => {
         const count = await Lead.count({
           where: { status_id: status.id }
         });
         return {
           status: status.label,
           level: status.level,
-          count
+          count,
+          fill: colors[index]
         };
       })
     );

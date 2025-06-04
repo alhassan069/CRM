@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "fast-csv": "^5.0.2",
+    "multer": "^2.0.1"
+  }
+}

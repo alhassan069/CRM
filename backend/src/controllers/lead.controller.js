@@ -3,6 +3,8 @@ const Lead = db.leads;
 const LeadStatus = db.leadStatuses;
 const User = db.users;
 const { Op } = require('sequelize');
+const fs = require('fs');
+const csv = require('fast-csv');
 
 // Get all leads with filtering options
 exports.getAllLeads = async (req, res) => {
@@ -355,4 +357,81 @@ exports.assignLead = async (req, res) => {
     console.error('Error assigning lead:', error);
     return res.status(500).json({ message: 'Failed to assign lead', error: error.message });
   }
+};
+
+exports.uploadLeadsFromCSV = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+
+  const filePath = req.file.path;
+  const results = [];
+  const errors = [];
+  let rowNum = 1;
+  let created = 0;
+
+  // Get status for 'New Lead'
+  let newLeadStatus;
+  try {
+    newLeadStatus = await LeadStatus.findOne({ where: { label: 'New Lead' } });
+    if (!newLeadStatus) throw new Error('Default status not found');
+  } catch (err) {
+    fs.unlinkSync(filePath);
+    return res.status(500).json({ message: 'Failed to get default lead status', error: err.message });
+  }
+
+  fs.createReadStream(filePath)
+    .pipe(csv.parse({ headers: true, ignoreEmpty: true, trim: true }))
+    .on('error', (error) => {
+      fs.unlinkSync(filePath);
+      return res.status(400).json({ message: 'CSV parsing error', error: error.message });
+    })
+    .on('data', (row) => {
+      rowNum++;
+      // Basic sanitization: allow only known fields
+      const leadData = {
+        doctor_name: row.doctor_name || '',
+        clinic_name: row.clinic_name || '',
+        specialty: row.specialty || '',
+        contact_number: row.contact_number || '',
+        email: row.email || '',
+        city: row.city || '',
+        source_of_lead: row.source_of_lead || '',
+        initial_notes: row.initial_notes || '',
+        years_of_experience: row.years_of_experience ? parseInt(row.years_of_experience) : null,
+        clinic_type: row.clinic_type || '',
+        preferred_comm_channel: row.preferred_comm_channel || '',
+        estimated_patient_volume: row.estimated_patient_volume ? parseInt(row.estimated_patient_volume) : null,
+        uses_existing_emr: row.uses_existing_emr === 'true' || row.uses_existing_emr === '1',
+        specific_pain_points: row.specific_pain_points || '',
+        referral_source: row.referral_source || '',
+        assigned_to: req.userId, // assign to uploading admin
+        status_id: newLeadStatus.id,
+        status_level: newLeadStatus.level,
+        reason_for_loss: null
+      };
+      // Validate email format if present
+      if (leadData.email && !/^\S+@\S+\.\S+$/.test(leadData.email)) {
+        errors.push({ row: rowNum, reason: 'Invalid email format', data: row });
+        return;
+      }
+      // Insert lead
+      results.push(
+        Lead.create(leadData)
+          .then(() => { created++; })
+          .catch((err) => {
+            errors.push({ row: rowNum, reason: err.message, data: row });
+          })
+      );
+    })
+    .on('end', async () => {
+      await Promise.all(results);
+      fs.unlinkSync(filePath);
+      return res.status(200).json({
+        message: 'CSV processed',
+        created,
+        failed: errors.length,
+        errors
+      });
+    });
 }; 

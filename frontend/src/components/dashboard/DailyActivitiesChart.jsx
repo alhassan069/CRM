@@ -11,10 +11,10 @@ const BarChart = ({ data }) => {
       Object.values(data).flatMap(day => Object.keys(day))
     )
   );
-  
+
   // Get all dates and sort them
   const dates = Object.keys(data).sort();
-  
+
   // Define colors for different activity types
   const activityColors = {
     'Call': '#3B82F6',    // blue
@@ -22,14 +22,22 @@ const BarChart = ({ data }) => {
     'WhatsApp': '#8B5CF6', // purple
     'Meeting': '#F59E0B'  // amber
   };
-  
+
   // Find the maximum value for scaling
-  const maxValue = Math.max(
-    ...Object.values(data).flatMap(day => 
-      Object.values(day)
-    )
-  );
-  
+  // const maxValue = Math.max(
+  //   ...Object.values(data).flatMap(day => 
+  //     Object.values(day)
+  //   )
+  // );
+
+
+  // ... existing code ...
+  // Find the maximum value for scaling, fallback to 1 if no data
+  const allValues = Object.values(data).flatMap(day => Object.values(day));
+  const maxValue = Math.max(1, ...allValues);
+  // ... existing code ...
+
+  // ... existing code ...
   return (
     <div className="mt-4">
       <div className="flex h-64">
@@ -41,7 +49,7 @@ const BarChart = ({ data }) => {
             </div>
           ))}
         </div>
-        
+
         {/* Chart area */}
         <div className="flex-1">
           <div className="flex h-full">
@@ -51,7 +59,7 @@ const BarChart = ({ data }) => {
                 month: 'short',
                 day: 'numeric'
               });
-              
+
               return (
                 <div key={date} className="flex-1 flex flex-col">
                   {/* Bars */}
@@ -59,8 +67,8 @@ const BarChart = ({ data }) => {
                     <div className="w-full flex justify-center">
                       {activityTypes.map(type => {
                         const value = dayData[type] || 0;
-                        const height = value ? (value / maxValue) * 100 : 0;
-                        
+                        const height = maxValue > 0 ? (value / maxValue) * 100 : 0;
+
                         return (
                           <div
                             key={type}
@@ -75,7 +83,7 @@ const BarChart = ({ data }) => {
                       })}
                     </div>
                   </div>
-                  
+
                   {/* X-axis labels */}
                   <div className="text-xs text-center text-gray-500 mt-2">
                     {formattedDate}
@@ -84,13 +92,13 @@ const BarChart = ({ data }) => {
               );
             })}
           </div>
-          
+
           {/* Legend */}
           <div className="flex justify-center gap-4 mt-4">
             {activityTypes.map(type => (
               <div key={type} className="flex items-center text-xs">
-                <div 
-                  className="w-3 h-3 mr-1 rounded-sm" 
+                <div
+                  className="w-3 h-3 mr-1 rounded-sm"
                   style={{ backgroundColor: activityColors[type] || '#CBD5E1' }}
                 ></div>
                 <span>{type}</span>
@@ -155,7 +163,7 @@ const DailyActivitiesChart = ({ teamwide = false, days = 7 }) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow-md">
       <h2 className="text-lg font-semibold mb-4">Daily Activities</h2>
-      
+
       {!hasData ? (
         <p className="text-gray-500 text-center py-12">No activity data available for the selected period.</p>
       ) : (

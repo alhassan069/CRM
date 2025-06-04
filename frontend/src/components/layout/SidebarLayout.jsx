@@ -1,7 +1,7 @@
 import { NavLink, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { LayoutDashboard, Users, BarChart3, LogOut } from 'lucide-react';
-
+import { SiteHeader } from '../shadcn_components/site-header';
 import {
   Sidebar,
   SidebarHeader,
@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarProvider,
+  SidebarInset
 } from '../ui/sidebar';
 
 const SidebarLayout = () => {
@@ -37,13 +38,13 @@ const SidebarLayout = () => {
               )}
             </div>
           </SidebarHeader>
-          
+
           <SidebarContent>
             <SidebarMenu>
               {navItems.map((item) => {
                 // Skip admin-only items for non-admin users
                 if (item.adminOnly && !isAdmin) return null;
-                
+
                 return (
                   <NavLink key={item.name} to={item.path}>
                     {({ isActive }) => (
@@ -61,7 +62,7 @@ const SidebarLayout = () => {
               })}
             </SidebarMenu>
           </SidebarContent>
-          
+
           <SidebarFooter className="p-4 border-t">
             <button
               onClick={logout}
@@ -73,22 +74,17 @@ const SidebarLayout = () => {
           </SidebarFooter>
         </Sidebar>
 
-        {/* Main content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <SidebarInset>
           {/* Main content header */}
-          <header className="bg-card shadow-sm z-10">
-            <div className="p-4">
-              <h1 className="text-2xl font-semibold">
-                {navItems.find(item => item.path === location.pathname || location.pathname.startsWith(item.path + '/'))?.name || 'Dashboard'}
-              </h1>
-            </div>
-          </header>
+          <SiteHeader title={navItems.find(item => item.path === location.pathname || location.pathname.startsWith(item.path + '/'))?.name || 'Dashboard'} />
 
           {/* Main content body */}
-          <main className="flex-1 overflow-y-auto  mx-18 p-4">
-            <Outlet />
-          </main>
-        </div>
+          <div className="flex flex-1 flex-col">
+            <div className="@container/main flex flex-1 flex-col gap-2 m-4">
+              <Outlet />
+            </div>
+          </div>
+        </SidebarInset>
       </SidebarProvider>
     </div>
   );
